@@ -25,4 +25,8 @@ func main() {
 		fmt.Println("applepenapple, Success")
 	}
 
+	// 207
+	numCourses := 3
+	prerequisites := [][]int{{1, 0}, {2, 1}}
+	mid.CanFinish(numCourses, prerequisites)
 }
