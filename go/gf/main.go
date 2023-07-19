@@ -64,3 +64,10 @@ func main() {
 
 	g.Wait()
 }
+
+/*func main() {
+	//example.DefaultCase()
+	//example.SetPort()
+	//example.MutiInstance()
+	example.BindDomain()
+}*/
