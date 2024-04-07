@@ -38,4 +38,13 @@ func main() {
 	fmt.Println(trie.StartsWith("app")) // 返回 True
 	trie.Insert("app")
 	fmt.Println(trie.Search("app")) // 返回 True
+
+	fmt.Println(mid.CoinsChange([]int{1, 3, 5}, 11))
+
+	// 238
+	nums := []int{1, 5, 3, 3, 2}
+	fmt.Println(mid.ProductExceptSelf(nums))
+
+	nums = []int{3, 4, 5}
+	fmt.Println(mid.FindDisappearedNumbers(nums))
 }

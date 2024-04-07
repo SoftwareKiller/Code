@@ -1,5 +1,10 @@
 package mid
 
+import (
+	"fmt"
+	"math"
+)
+
 /*
 
 	https://leetcode.cn/problems/word-break/
@@ -149,4 +154,89 @@ func (this *Trie) Search(word string) bool {
 
 func (this *Trie) StartsWith(prefix string) bool {
 	return this.SearchPrefix(prefix) != nil
+}
+
+/*
+  给你 k 种面值的硬币，面值分别为 c1, c2 ... ck，每种硬币的
+  数量无限，再给一个总金额 amount，问你最少需要几枚硬币凑出这个金额，
+ 如果不可能凑出，算法返回 -1
+*/
+
+var dict = map[int]int{}
+
+func CoinsChange(coins []int, amount int) int {
+	if amount == 0 {
+		return 0
+	}
+
+	if amount < 0 {
+		return -1
+	}
+
+	res, ok := dict[amount]
+	if ok {
+		return res
+	}
+
+	res = math.MaxInt
+	for _, coin := range coins {
+		subProblem := CoinsChange(coins, amount-coin)
+		if subProblem == -1 {
+			continue
+		}
+		res = Min(res, 1+subProblem)
+	}
+
+	if res != math.MaxInt && res != -1 {
+		dict[amount] = res
+	}
+
+	return res
+}
+
+func Min(l, r int) int {
+	if l < r {
+		return l
+	}
+	return r
+}
+
+func ProductExceptSelf(nums []int) []int {
+	n := len(nums)
+	ans := make([]int, n)
+
+	fmt.Println(nums)
+
+	ans[0] = 1
+	for i := 1; i < n; i++ {
+		ans[i] = nums[i-1] * ans[i-1]
+		fmt.Println(ans)
+	}
+
+	R := 1
+	for i := n - 1; i >= 0; i-- {
+		ans[i] = ans[i] * R
+		R *= nums[i]
+		fmt.Println(ans)
+		fmt.Println(R)
+	}
+
+	return ans
+}
+
+func FindDisappearedNumbers(nums []int) []int {
+	n := len(nums)
+	ans := make([]int, 0)
+	for _, num := range nums {
+		num := (num - 1) % n
+		nums[num] += n
+	}
+
+	for i, num := range nums {
+		if num <= n {
+			ans = append(ans, i+1)
+		}
+	}
+
+	return ans
 }
