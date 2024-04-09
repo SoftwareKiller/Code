@@ -47,4 +47,8 @@ func main() {
 
 	nums = []int{3, 4, 5}
 	fmt.Println(mid.FindDisappearedNumbers(nums))
+
+	// 239
+	nums = []int{5,3,-1,-3,5,3,6,7}
+	fmt.Println(hard.MaxSlidingWindow(nums, 3))
 }
