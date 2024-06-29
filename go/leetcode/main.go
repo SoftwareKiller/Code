@@ -51,4 +51,7 @@ func main() {
 	// 239
 	nums = []int{5,3,-1,-3,5,3,6,7}
 	fmt.Println(hard.MaxSlidingWindow(nums, 3))
+
+	//
+	fmt.Println(mid.NumSquares(12))
 }
