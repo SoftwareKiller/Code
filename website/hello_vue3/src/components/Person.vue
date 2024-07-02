@@ -8,30 +8,23 @@
     </div>
 </template>
 
-<script lang="ts">
-  export default {
-    name:"Person",
-    setup() {
-      // 数据
-      let name = "luca"  // 这种写法定义的变量非响应式，响应式即为数据被修改后，页面上不会实时刷新
-      let age = 18
-      let tel = "138"
+<script lang="ts" setup name="Person333">
+  // 数据
+  let name = "luca"  // 这种写法定义的变量非响应式，响应式即为数据被修改后，页面上不会实时刷新
+  let age = 18
+  let tel = "138"
 
-      function changeName() {
-        name = "alex"
-        console.log(name)  // 打印log可以看到，name变量确实被更改了
-      }
+  function changeName() {
+    name = "alex"
+    console.log(name)  // 打印log可以看到，name变量确实被更改了
+  }
 
-      function changeAge() {
-        age += 1
-      }
+  function changeAge() {
+    age += 1
+  }
 
-      function showTel() {
-        alert(tel)
-      }
-
-      return {name, age, changeName, changeAge, showTel}
-    }
+  function showTel() {
+    alert(tel)
   }
 </script>
 
