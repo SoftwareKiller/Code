@@ -1,9 +1,7 @@
 <template>
-    <!--html-->
-    <div class="app">
-        <h1>Hello Vue</h1>
-        <Person/>
-    </div>
+    <Person/>
+    <Person/>
+    <Person/>
 </template>
 
 <script lang="ts">
