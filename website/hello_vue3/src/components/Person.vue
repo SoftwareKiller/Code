@@ -2,25 +2,28 @@
     <div class="person">
         <h2>姓名： {{ name }}</h2>
         <h2>年龄： {{ age }}</h2>
+        <h2>地址： {{ address }}</h2>
         <button @click="showTel">查看联系方式</button>
         <button @click="changeName">修改名字</button>
         <button @click="changeAge">修改年龄</button>
     </div>
 </template>
 
-<script lang="ts" setup name="Person333">
+<script lang="ts" setup name="Person">
+  import { ref } from 'vue';
   // 数据
-  let name = "luca"  // 这种写法定义的变量非响应式，响应式即为数据被修改后，页面上不会实时刷新
-  let age = 18
+  let name = ref("luca")  // 这种写法定义的变量非响应式，响应式即为数据被修改后，页面上不会实时刷新
+  let age = ref(18)
   let tel = "138"
+  let address = "华南"
 
   function changeName() {
-    name = "alex"
+    name.value = "alex"
     console.log(name)  // 打印log可以看到，name变量确实被更改了
   }
 
   function changeAge() {
-    age += 1
+    age.value += 1
   }
 
   function showTel() {
@@ -30,7 +33,7 @@
 
 <style scoped>
   .person {
-    background-color: skyblue;
+    background-color: rgb(117, 142, 152);
     box-shadow: 0 0 10px;
     border-radius: 10px;
     padding: 20px;
