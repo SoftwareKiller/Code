@@ -1,33 +1,32 @@
 <template>
     <div class="person">
-        <h2>姓名： {{ name }}</h2>
-        <h2>年龄： {{ age }}</h2>
-        <h2>地址： {{ address }}</h2>
-        <button @click="showTel">查看联系方式</button>
-        <button @click="changeName">修改名字</button>
-        <button @click="changeAge">修改年龄</button>
+      <h2>这是一辆大奔，型号为{{ car.No }}，价值{{ car.price }} 万</h2>
+      <button @click="refresh">修改骑车价格</button>
+      <hr>
+      <h2>游戏列表</h2>
+      <ul>
+        <li v-for="g in games"  :key="g.id">{{ g.name }}</li>
+      </ul>
+      <button @click="changeFirstName">修改第一个游戏名</button>
     </div>
 </template>
 
-<script lang="ts" setup name="Person">
-  import { ref } from 'vue';
-  // 数据
-  let name = ref("luca")  // 这种写法定义的变量非响应式，响应式即为数据被修改后，页面上不会实时刷新
-  let age = ref(18)
-  let tel = "138"
-  let address = "华南"
+<script lang="ts" setup name="person">
+  import { reactive } from 'vue';
 
-  function changeName() {
-    name.value = "alex"
-    console.log(name)  // 打印log可以看到，name变量确实被更改了
+  let car = reactive({No:"AMG", price:100 })
+  let games = reactive([
+    {id: "01", name:"旷野之息"},
+    {id: "02", name:"王国之泪"},
+    {id: "03", name:"黑神话：悟空"}
+  ])
+
+  function refresh() {
+    car.price += 10
   }
 
-  function changeAge() {
-    age.value += 1
-  }
-
-  function showTel() {
-    alert(tel)
+  function changeFirstName() {
+    games[0].name = "巫师3"
   }
 </script>
 
@@ -40,5 +39,9 @@
   }
   button {
     margin: 5px;
+  }
+  li {
+    font-size: 20px;
+    margin: 10px;
   }
 </style>
