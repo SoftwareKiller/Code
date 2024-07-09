@@ -3,6 +3,7 @@ package mid
 import (
 	"fmt"
 	"math"
+	"strings"
 )
 
 /*
@@ -265,4 +266,50 @@ func NumSquares(n int) int {
 		f[i] = minn
 	}
 	return f[n]
+}
+
+// 394. 字符串解码
+// https://leetcode.cn/problems/decode-string/description/?envType=problem-list-v2&envId=2cktkvj
+// 中等
+// 给定一个经过编码的字符串，返回它解码后的字符串。
+
+// 编码规则为: k[encoded_string]，表示其中方括号内部的 encoded_string 正好重复 k 次。注意 k 保证为正整数。
+
+// 你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。
+
+// 此外，你可以认为原始数据不包含数字，所有的数字只表示重复的次数 k ，例如不会出现像 3a 或 2[4] 的输入。
+func DecodeString(s string) string {
+	type pair struct {
+		num int
+		sb  *strings.Builder
+	}
+
+	var sb = &strings.Builder{}
+	var stack []pair
+	var num int
+
+	for _, ch := range s {
+		switch {
+		case '0' <= ch && ch <= '9':
+			num = num*10 + int(ch-'0')
+		case ch == '[':
+			stack = append(stack, pair{num: num, sb: sb})
+			num = 0
+			sb = &strings.Builder{}
+		case ch == ']':
+			p := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+
+			// 把当前的加入到前面的 sb 上面
+			p.sb.Grow(p.num * sb.Len())
+			for j := 0; j < p.num; j++ {
+				p.sb.WriteString(sb.String())
+			}
+			// sb 换成前面的
+			sb = p.sb
+		default:
+			sb.WriteRune(ch)
+		}
+	}
+	return sb.String()
 }
