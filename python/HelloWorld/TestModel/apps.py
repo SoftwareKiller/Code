@@ -7,4 +7,5 @@ class TestmodelConfig(AppConfig):
     def ready(self):
         # 启动定时任务调度器
         from .task import scheduler
+        print("Starting scheduler...")
         scheduler.start()
