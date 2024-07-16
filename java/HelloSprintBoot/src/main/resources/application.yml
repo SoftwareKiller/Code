@@ -1,0 +1,6 @@
+name: byd
+
+car:
+  #name: byd
+  name: ${name}
+  price: 300W
