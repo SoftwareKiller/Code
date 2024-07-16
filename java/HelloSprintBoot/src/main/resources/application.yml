@@ -4,3 +4,9 @@ car:
   #name: byd
   name: ${name}
   price: 300W
+
+spring:
+  data:
+    redis:
+      host: 192.168.77.128
+      port: 6379
