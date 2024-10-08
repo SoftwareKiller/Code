@@ -101,15 +101,109 @@ func MaxSlidingWindow(nums []int, k int) []int {
 	heap.Init(q)
 
 	n := len(nums)
-	ans := make([]int, 1, n - k + 1)
+	ans := make([]int, 1, n-k+1)
 	ans[0] = nums[q.IntSlice[0]]
 	for i := k; i < n; i++ {
 		heap.Push(q, i)
-		for q.IntSlice[0] <= i - k {
+		for q.IntSlice[0] <= i-k {
 			heap.Pop(q)
 		}
 		ans = append(ans, nums[q.IntSlice[0]])
 	}
+
+	return ans
+}
+
+/*
+	301. 删除无效的括号
+	困难
+	相关标签
+	相关企业
+	提示
+	给你一个由若干括号和字母组成的字符串 s ，删除最小数量的无效括号，使得输入的字符串有效。
+
+	返回所有可能的结果。答案可以按 任意顺序 返回。
+
+
+
+	示例 1：
+
+	输入：s = "()())()"
+	输出：["(())()","()()()"]
+	示例 2：
+
+	输入：s = "(a)())()"
+	输出：["(a())()","(a)()()"]
+	示例 3：
+
+	输入：s = ")("
+	输出：[""]
+*/
+
+func isValid301(s string) bool {
+	count := 0
+	for _, c := range s {
+		if c == '(' {
+			count++
+		} else if c == ')' {
+			count--
+			if count < 0 {
+				return false
+			}
+		}
+	}
+
+	return count == 0
+}
+
+func dfs301(ans *[]string, s string, start, lCount, rCount, l, r int) {
+	if l == 0 && r == 0 {
+		if isValid301(s) {
+			*ans = append(*ans, s)
+		}
+		return
+	}
+
+	for i := start; i < len(s); i++ {
+		if s[i] == '(' {
+			lCount++
+		}
+
+		if s[i] == ')' {
+			rCount++
+		}
+
+		if i > start && s[i] == s[i-1] {
+			continue
+		}
+
+		if s[i] == '(' && l > 0 {
+			dfs301(ans, s[:i]+s[i+1:], i, lCount-1, rCount, l-1, r)
+		}
+		if s[i] == ')' && r > 0 {
+			dfs301(ans, s[:i]+s[i+1:], i, lCount, rCount-1, l, r-1)
+		}
+
+		if rCount > lCount {
+			break
+		}
+	}
+}
+
+func RemoveInvalidParentheses(s string) []string {
+	lRemove, rRemove := 0, 0
+	for _, c := range s {
+		if c == '(' {
+			lRemove++
+		} else if c == ')' && lRemove == 0 {
+			rRemove++
+		} else if c == ')' && lRemove > 0 {
+			lRemove--
+		}
+	}
+
+	ans := make([]string, 0)
+	dfs301(&ans, s, 0, 0, 0, lRemove, rRemove)
 
 	return ans
 }

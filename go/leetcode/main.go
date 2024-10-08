@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"leetcode/mid"
+	"leetcode/hard"
 )
 
 func main() {
@@ -55,6 +55,12 @@ func main() {
 	// fmt.Println(mid.NumSquares(12))
 
 	// 394
-	str := "3[a]2[bc]"
-	fmt.Println(mid.DecodeString(str))
+	// str := "3[a]2[bc]"
+	// fmt.Println(mid.DecodeString(str))
+
+	// 301
+	//str := "()())()"
+	//str := ")d))"
+	str := "(r(()()("
+	fmt.Println(hard.RemoveInvalidParentheses(str))
 }
