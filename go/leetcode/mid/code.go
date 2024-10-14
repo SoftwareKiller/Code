@@ -313,3 +313,20 @@ func DecodeString(s string) string {
 	}
 	return sb.String()
 }
+
+// func GroupAnagrams(strs []string) [][]string {
+// 	m := make(map[string][]string, 0)
+// 	for _, s := range strs {
+// 		t := []byte(s)
+// 		slices.Sort(t)
+// 		sortS := t
+// 		m[string(sortS)] = append(m[string(sortS)], s)
+// 	}
+
+// 	ans := make([][]string, 0)
+// 	for _, l := range m {
+// 		ans = append(ans, l)
+// 	}
+
+// 	return ans
+// }

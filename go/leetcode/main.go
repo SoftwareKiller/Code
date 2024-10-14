@@ -67,4 +67,6 @@ func main() {
 	// 312
 	nums := []int{3, 1, 5, 8}
 	fmt.Println(hard.MaxCoins(nums))
+	// strs := []string{"eat", "tea", "tan", "ate", "nat", "bat"}
+	// fmt.Println(mid.GroupAnagrams(strs))
 }
