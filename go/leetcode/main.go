@@ -59,8 +59,12 @@ func main() {
 	// fmt.Println(mid.DecodeString(str))
 
 	// 301
-	//str := "()())()"
-	//str := ")d))"
-	str := "(r(()()("
-	fmt.Println(hard.RemoveInvalidParentheses(str))
+	// str := "()())()"
+	// str := ")d))"
+	// str := "(r(()()("
+	// fmt.Println(hard.RemoveInvalidParentheses(str))
+
+	// 312
+	nums := []int{3, 1, 5, 8}
+	fmt.Println(hard.MaxCoins(nums))
 }

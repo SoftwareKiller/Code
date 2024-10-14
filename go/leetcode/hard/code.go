@@ -44,13 +44,6 @@ func Trap(height []int) int {
 	return ans
 }
 
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
 func min(a, b int) int {
 	if a < b {
 		return a
@@ -206,4 +199,80 @@ func RemoveInvalidParentheses(s string) []string {
 	dfs301(&ans, s, 0, 0, 0, lRemove, rRemove)
 
 	return ans
+}
+
+/*
+    https://leetcode.cn/problems/burst-balloons/description/?envType=problem-list-v2&envId=2cktkvj
+	代码
+	312. 戳气球
+	已解答
+	困难
+	相关标签
+	相关企业
+	有 n 个气球，编号为0 到 n - 1，每个气球上都标有一个数字，这些数字存在数组 nums 中。
+
+	现在要求你戳破所有的气球。戳破第 i 个气球，你可以获得 nums[i - 1] * nums[i] * nums[i + 1] 枚硬币。 这里的 i - 1 和 i + 1 代表和 i 相邻的两个气球的序号。如果 i - 1或 i + 1 超出了数组的边界，那么就当它是一个数字为 1 的气球。
+
+	求所能获得硬币的最大数量。
+
+
+
+	示例 1：
+	输入：nums = [3,1,5,8]
+	输出：167
+	解释：
+	nums = [3,1,5,8] --> [3,5,8] --> [3,8] --> [8] --> []
+	coins =  3*1*5    +   3*5*8   +  1*3*8  + 1*8*1 = 167
+	示例 2：
+
+	输入：nums = [1,5]
+	输出：10
+
+
+	提示：
+
+	n == nums.length
+	1 <= n <= 300
+	0 <= nums[i] <= 100
+*/
+
+func MaxCoins(nums []int) int {
+	nums = append(nums, 1)
+	nums = append([]int{1}, nums...)
+
+	n := len(nums)
+	dp := make([][]int, n)
+	sli := make([]int, n*n)
+	for i := 0; i < n; i++ {
+		dp[i] = sli[:n]
+		sli = sli[n:]
+	}
+
+	// 这里的转移逻辑为，假设最后一个不打破的气球为k
+	// 那么结果为 coins[i+1,k-1] + coins[i] * coins[k] * coins[j] + coins[k+1,j-1]
+	// 将i+1到k-1的气球全部打破，积分记为c[i+1,k-1]
+	// 将k+1到j-1的气球全部打破，积分记为c[k+1,j-1]
+	// 那么最后剩的气球为c[i] * c[k] * c[j]
+	// 所以转移方程为：
+	// c[i][j] = max(c[i][j], c[i+1,k-1] + c[i] * c[k] * coins[j] + c[k+1,j-1])
+	/*
+		    nums = [1,3,1,5,8,1]
+			dp[0][2] = 3
+			dp[1][3] = 15
+			dp[2][4] = 40
+			dp[3][5] = 40
+			dp[0][4] = 30
+	*/
+	// 长度从3开始，只要nums长度大于1，这里满足循环条件，本题nums长度的区间范围是大于等于1的
+	for l := 3; l <= n; l++ {
+		for i := 0; i <= n-l; i++ {
+			j := i + l - 1
+			// c[i+1] -- c[j-1]
+			for k := i + 1; k <= j-1; k++ {
+				dp[i][j] = max(dp[i][j], dp[i][k]+nums[i]*nums[k]*nums[j]+dp[k][j])
+			}
+		}
+	}
+
+	return dp[0][n-1]
 }
