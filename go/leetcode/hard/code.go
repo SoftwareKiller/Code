@@ -44,13 +44,6 @@ func Trap(height []int) int {
 	return ans
 }
 
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
 /*
    239. 滑动窗口最大值
    给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
@@ -275,4 +268,183 @@ func MaxCoins(nums []int) int {
 	}
 
 	return dp[0][n-1]
+}
+
+/*
+	https://leetcode.cn/problems/first-missing-positive/description/?envType=study-plan-v2&envId=top-100-liked
+	41. 缺失的第一个正数
+	给你一个未排序的整数数组 nums ，请你找出其中没有出现的最小的正整数。
+
+	请你实现时间复杂度为 O(n) 并且只使用常数级别额外空间的解决方案。
+
+
+	示例 1：
+
+	输入：nums = [1,2,0]
+	输出：3
+	解释：范围 [1,2] 中的数字都在数组中。
+	示例 2：
+
+	输入：nums = [3,4,-1,1]
+	输出：2
+	解释：1 在数组中，但 2 没有。
+	示例 3：
+
+	输入：nums = [7,8,9,11,12]
+	输出：1
+	解释：最小的正数 1 没有出现。
+
+*/
+
+func FirstMissingPositive(nums []int) int {
+	l := len(nums)
+	for i := range nums {
+		for nums[i] > 0 && nums[i] <= l && nums[i] != i+1 {
+			t := nums[i] - 1
+			if nums[t] == t+1 {
+				break
+			}
+			nums[i], nums[t] = nums[t], nums[i]
+		}
+	}
+
+	for i := 0; i <= len(nums); i++ {
+		v := nums[i]
+		if v != i+1 {
+			return i + 1
+		}
+	}
+	return len(nums) + 1
+}
+
+// func SolveNQueens(n int) [][]string {
+// 	ans := make([][]string, 0)
+// 	board := make([][]byte, 0)
+// 	row := strings.Repeat(".", n)
+// 	for i := 0; i < n; i++ {
+// 		board = append(board, []byte(row))
+// 	}
+// 	var backtrack func(int)
+// 	backtrack = func(i int) {
+// 		if i == n {
+// 			ans = append(ans, slices.Clone(board))
+// 			return
+// 		}
+
+// 		for j := 0; j < n; j++ {
+// 			if !isValid(board, i, j) {
+// 				continue
+// 			}
+
+// 			board[i][j] = 'Q'
+// 			backtrack(i + 1)
+// 			board[i][j] = '.'
+// 		}
+// 	}
+// 	backtrack(0)
+// 	return ans
+// }
+
+// func isValid(board [][]byte, i, j int) bool {
+// 	n := len(board)
+// 	for row := 0; row < n; row++ {
+// 		if board[row][j] == 'Q' {
+// 			return false
+// 		}
+// 	}
+
+// 	row := i - 1
+// 	col := j - 1
+// 	for row >= 0 && col >= 0 {
+// 		if board[row][col] == 'Q' {
+// 			return false
+// 		}
+// 		row--
+// 		col--
+// 	}
+
+// 	row = i - 1
+// 	col = j + 1
+// 	for row >= 0 && col < n {
+// 		if board[row][col] == 'Q' {
+// 			return false
+// 		}
+// 		row--
+// 		col++
+// 	}
+// 	return true
+// }
+
+func FindMedianSortedArrays(nums1 []int, nums2 []int) float64 {
+	m, n := len(nums1), len(nums2)
+	if m == 0 && n == 0 {
+		return 0.0
+	}
+	oddNum := false
+	if (m+n)%2 == 1 {
+		oddNum = true
+	}
+
+	if m == 0 || n == 0 {
+		nums := nums1
+		if m == 0 {
+			nums = nums2
+		}
+		if oddNum {
+			return float64(nums[len(nums)/2])
+		} else {
+			return float64(nums[len(nums)/2]+nums[(len(nums)-1)/2]) / 2
+		}
+	}
+
+	k1, k2 := (m+n)/2, (m+n)/2
+	if !oddNum {
+		k2 = k1 + 1
+	}
+
+	p1, p2 := 0, 0
+	for (p1+p2) < k2 && p1 < m-1 && p2 < n-1 {
+		if nums1[p1] > nums2[p2] {
+			p2++
+		} else {
+			p1++
+		}
+	}
+
+	var ans float64
+	if !oddNum {
+		ans = float64((nums1[p1] + nums2[p2])) / 2
+	} else {
+		if nums1[p1] > nums2[p2] {
+			ans = float64(nums1[p1])
+		} else {
+			ans = float64(nums2[p2])
+		}
+	}
+	return ans
+}
+
+/*
+32. 最长有效括号
+https://leetcode.cn/problems/longest-valid-parentheses/description/?envType=study-plan-v2&envId=top-100-liked
+*/
+func LongestValidParentheses(s string) int {
+	ans := 0
+	stack := make([]int, 0)
+	stack = append(stack, -1)
+	for i, c := range s {
+		if c == '(' {
+			stack = append(stack, i)
+		} else {
+			if len(stack) > 0 {
+				stack = stack[:len(stack)-1]
+			}
+			if len(stack) <= 0 {
+				stack = append(stack, i)
+			} else {
+				ans = max(ans, i-stack[len(stack)-1])
+			}
+		}
+	}
+	return ans
 }

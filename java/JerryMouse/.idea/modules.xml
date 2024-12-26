@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/JerryMouse.iml" filepath="$PROJECT_DIR$/JerryMouse.iml" />
       <module fileurl="file://$PROJECT_DIR$/step-by-step/simple-http-server/simple-http-server.iml" filepath="$PROJECT_DIR$/step-by-step/simple-http-server/simple-http-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/step-by-step/simple-servlet-server/simple-servlet-server.iml" filepath="$PROJECT_DIR$/step-by-step/simple-servlet-server/simple-servlet-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/step-by-step/step-by-step.iml" filepath="$PROJECT_DIR$/step-by-step/step-by-step.iml" />
     </modules>
   </component>

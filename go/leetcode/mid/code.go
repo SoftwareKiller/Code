@@ -292,6 +292,7 @@ func DecodeString(s string) string {
 		switch {
 		case '0' <= ch && ch <= '9':
 			num = num*10 + int(ch-'0')
+		// 支持嵌套结构
 		case ch == '[':
 			stack = append(stack, pair{num: num, sb: sb})
 			num = 0
@@ -302,9 +303,11 @@ func DecodeString(s string) string {
 
 			// 把当前的加入到前面的 sb 上面
 			p.sb.Grow(p.num * sb.Len())
-			for j := 0; j < p.num; j++ {
-				p.sb.WriteString(sb.String())
-			}
+			// for j := 0; j < p.num; j++ {
+			// 	p.sb.WriteString(sb.String())
+			// }
+			decodeStr := strings.Repeat(sb.String(), p.num)
+			p.sb.WriteString(decodeStr)
 			// sb 换成前面的
 			sb = p.sb
 		default:
@@ -330,3 +333,435 @@ func DecodeString(s string) string {
 
 // 	return ans
 // }
+
+/*
+	    https://leetcode.cn/problems/3sum/description/?envType=study-plan-v2&envId=top-100-liked
+		15. 三数之和
+		已解答
+		中等
+		相关标签
+		相关企业
+		提示
+		给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，同时还满足 nums[i] + nums[j] + nums[k] == 0 。请你返回所有和为 0 且不重复的三元组。
+
+		注意：答案中不可以包含重复的三元组。
+
+
+		示例 1：
+
+		输入：nums = [-1,0,1,2,-1,-4]
+		输出：[[-1,-1,2],[-1,0,1]]
+		解释：
+		nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0 。
+		nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0 。
+		nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0 。
+		不同的三元组是 [-1,0,1] 和 [-1,-1,2] 。
+		注意，输出的顺序和三元组的顺序并不重要。
+		示例 2：
+
+		输入：nums = [0,1,1]
+		输出：[]
+		解释：唯一可能的三元组和不为 0 。
+		示例 3：
+
+		输入：nums = [0,0,0]
+		输出：[[0,0,0]]
+		解释：唯一可能的三元组和为 0 。
+*/
+// func ThreeSum(nums []int) [][]int {
+// 	slices.Sort(nums)
+
+// 	ans := make([][]int, 0)
+// 	n := len(nums)
+// 	for i := 0; i < n; i++ {
+// 		// 经过排序后，如果最小值都大于0，那么与之后的值加和不可能等于0
+// 		if nums[i] > 0 {
+// 			return ans
+// 		}
+
+// 		// 对第一个元素做去重逻辑
+// 		// 去重前值，保证每一个元素在首次遇到时，可以被包含在计算范围内
+// 		// 后续计算的两个元素，只需要保证是当前值的负值即可
+// 		// 如果列表值为[-1,-1,-1,2]
+// 		// nums[i] == nums[i+1]会导致上述类型的计算被去重
+// 		if i > 0 && nums[i] == nums[i-1] {
+// 			continue
+// 		}
+
+// 		l := i + 1
+// 		r := n - 1
+// 		for l < r {
+// 			// 列表已经排序
+
+// 			if nums[i]+nums[l]+nums[r] > 0 { // 数字向减小方向移动
+// 				r--
+// 			} else if nums[i]+nums[l]+nums[r] < 0 { // 数字向增大方向移动
+// 				l++
+// 			} else {
+// 				ans = append(ans, []int{nums[i], nums[l], nums[r]})
+// 				// 元素2去重
+// 				for l < r && nums[r] == nums[r-1] {
+// 					r--
+// 				}
+// 				// 元素3去重
+// 				for l < r && nums[l] == nums[l+1] {
+// 					l++
+// 				}
+// 				// 上面的去重逻辑不包含当前被计算过的值，去重只到边界，因此需要再挪动一次索引
+// 				r--
+// 				l++
+// 			}
+// 		}
+// 	}
+
+// 	return ans
+// }
+
+func LengthOfLongestSubstring(s string) int {
+	ans := 0
+	l := 0
+	hash := make(map[rune]bool)
+	for r, c := range s {
+		for hash[c] {
+			delete(hash, rune(s[l]))
+			l++
+		}
+		hash[c] = true
+		ans = max(ans, r-l+1)
+	}
+	return ans
+}
+
+/*
+    https://leetcode.cn/problems/find-all-anagrams-in-a-string/description/?envType=study-plan-v2&envId=top-100-liked
+	438. 找到字符串中所有字母异位词
+  	给定两个字符串 s 和 p，找到 s 中所有 p 的
+	异位词
+	的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+
+
+
+	示例 1:
+
+	输入: s = "cbaebabacd", p = "abc"
+	输出: [0,6]
+	解释:
+	起始索引等于 0 的子串是 "cba", 它是 "abc" 的异位词。
+	起始索引等于 6 的子串是 "bac", 它是 "abc" 的异位词。
+	示例 2:
+
+	输入: s = "abab", p = "ab"
+	输出: [0,1,2]
+	解释:
+	起始索引等于 0 的子串是 "ab", 它是 "ab" 的异位词。
+	起始索引等于 1 的子串是 "ba", 它是 "ab" 的异位词。
+	起始索引等于 2 的子串是 "ab", 它是 "ab" 的异位词。
+
+
+	提示:
+
+	1 <= s.length, p.length <= 3 * 104
+	s 和 p 仅包含小写字母
+*/
+
+func FindAnagrams(s string, p string) []int {
+	ans := make([]int, 0)
+	cnt := [128]int{}
+	for _, c := range p {
+		cnt[c]++
+	}
+
+	left := 0
+	window := [128]int{}
+	for right, c := range s {
+		window[c]++
+		// 窗口满了
+		for window[c] > cnt[c] {
+			window[s[left]]--
+			left++
+		}
+
+		if right-left+1 == len(p) {
+			ans = append(ans, left)
+		}
+	}
+
+	return ans
+}
+
+/*
+	https://leetcode.cn/problems/subarray-sum-equals-k/description/?envType=study-plan-v2&envId=top-100-liked
+	560. 和为 K 的子数组
+	已解答
+	中等
+	相关标签
+	相关企业
+	提示
+	给你一个整数数组 nums 和一个整数 k ，请你统计并返回 该数组中和为 k 的子数组的个数 。
+
+	子数组是数组中元素的连续非空序列。
+
+
+
+	示例 1：
+
+	输入：nums = [1,1,1], k = 2
+	输出：2
+	示例 2：
+
+	输入：nums = [1,2,3], k = 3
+	输出：2
+
+
+	提示：
+
+	1 <= nums.length <= 2 * 104
+	-1000 <= nums[i] <= 1000
+	-107 <= k <= 107
+*/
+
+func SubarraySum(nums []int, k int) int {
+	ans := 0
+
+	hash := map[int]int{0: 1}
+	//  处理0 - 0 = 0
+	sum := 0
+	for _, num := range nums {
+		sum += num
+		// sum 为 0 到 i的前缀和
+		// sum[x,y]为从x到y的前缀和
+		// sum - sum[x,y] = k，即y+1到i部分的值为k
+		// sum - k == sum[x,y]
+		// 序列中可以连续出现0，每出现一次，前缀和不变，但子序列要增加
+		ans += hash[sum-k]
+		hash[sum]++
+	}
+
+	return ans
+}
+
+/*
+	https://leetcode.cn/problems/maximum-subarray/description/?envType=study-plan-v2&envId=top-100-liked
+	代码
+	测试用例
+	测试结果
+	测试结果
+	53. 最大子数组和
+	已解答
+	中等
+	相关标签
+	相关企业
+	给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+
+	子数组
+	是数组中的一个连续部分。
+
+
+
+	示例 1：
+
+	输入：nums = [-2,1,-3,4,-1,2,1,-5,4]
+	输出：6
+	解释：连续子数组 [4,-1,2,1] 的和最大，为 6 。
+	示例 2：
+
+	输入：nums = [1]
+	输出：1
+	示例 3：
+
+	输入：nums = [5,4,-1,7,8]
+	输出：23
+
+
+	提示：
+
+	1 <= nums.length <= 105
+	-104 <= nums[i] <= 104
+*/
+
+func MaxSubArray(nums []int) int {
+	ans := math.MinInt
+
+	sum := 0
+	for _, n := range nums {
+		sum += n
+		if sum > ans {
+			ans = sum
+		}
+
+		if sum < 0 {
+			sum = 0
+		}
+	}
+	return ans
+}
+
+/*
+	https://leetcode.cn/problems/set-matrix-zeroes/description/?envType=study-plan-v2&envId=top-100-liked
+	73. 矩阵置零
+	提示
+	给定一个 m x n 的矩阵，如果一个元素为 0 ，则将其所在行和列的所有元素都设为 0 。请使用 原地 算法。
+
+	示例 1：
+
+	输入：matrix = [[1,1,1],[1,0,1],[1,1,1]]
+	输出：[[1,0,1],[0,0,0],[1,0,1]]
+	示例 2：
+
+	输入：matrix = [[0,1,2,0],[3,4,5,2],[1,3,1,5]]
+	输出：[[0,0,0,0],[0,4,5,0],[0,3,1,0]]
+
+	提示：
+
+	m == matrix.length
+	n == matrix[0].length
+	1 <= m, n <= 200
+	-231 <= matrix[i][j] <= 231 - 1
+*/
+
+func SetZeroes(matrix [][]int) {
+	// 为了不占用额外空间，在matrix上进行标记是否置零
+	/*
+		思路：
+		将matrix的首行首列记录是否含有0
+		然后从第二行和第二列开始统计是否含有0，将结果记录在首行首列中
+		根据首行首列的记录进行置零
+		根据统计首行首列的结果对首行首列进行操作
+	*/
+
+	firstRow := false
+	firstCol := false
+
+	// 记录行首
+	for i := range matrix[0] {
+		if matrix[0][i] == 0 {
+			firstRow = true
+			break
+		}
+	}
+
+	// 记录列首
+	for i := range matrix {
+		if matrix[i][0] == 0 {
+			firstCol = true
+			break
+		}
+	}
+
+	for i := 1; i < len(matrix); i++ {
+		for j := 1; j < len(matrix[0]); j++ {
+			if matrix[i][j] == 0 {
+				matrix[i][0] = 0
+				matrix[0][j] = 0
+			}
+		}
+	}
+
+	rowLen := len(matrix)
+	colLen := len(matrix[0])
+	for i := 1; i < rowLen; i++ {
+		for j := 1; j < colLen; j++ {
+			if matrix[i][0] == 0 || matrix[0][j] == 0 {
+				matrix[i][j] = 0
+			}
+		}
+	}
+
+	if firstRow {
+		for i := range matrix[0] {
+			matrix[0][i] = 0
+		}
+	}
+
+	if firstCol {
+		for i := range matrix {
+			matrix[i][0] = 0
+		}
+	}
+}
+
+func SearchMatrix(matrix [][]int, target int) bool {
+	top, bottom, left, right := 0, len(matrix)-1, 0, len(matrix[0])-1
+
+	for left <= right && top <= bottom {
+		if matrix[bottom][left] > target {
+			bottom--
+		} else if matrix[bottom][left] < target {
+			left++
+		} else {
+			return true
+		}
+	}
+
+	return false
+}
+
+func Partition(s string) [][]string {
+	n := len(s)
+	track := make([]string, 0)
+	ans := make([][]string, 0)
+	var dfs func(int, int)
+	dfs = func(i, start int) {
+		if i == n {
+			ans = append(ans, append([]string(nil), track...))
+			return
+		}
+
+		if i < n-1 {
+			dfs(i+1, start)
+		}
+
+		if isPalindrome(s, start, i) {
+			track = append(track, s[start:i+1])
+			dfs(i+1, i+1)
+			track = track[:len(track)-1]
+		}
+	}
+	dfs(0, 0)
+	return ans
+}
+
+func isPalindrome(s string, l, r int) bool {
+	for l < r {
+		if s[l] != s[r] {
+			return false
+		}
+		l++
+		r--
+	}
+	return true
+}
+
+func MaxProfit(prices []int) int {
+	n := len(prices)
+	dp_i_0, dp_i_1 := 0, math.MinInt
+
+	for i := 0; i < n; i++ {
+		dp_i_0 = max(dp_i_0, dp_i_1+prices[i])
+		dp_i_1 = max(dp_i_1, -prices[i])
+	}
+	return dp_i_0
+}
+
+var robMem []int
+
+func Rob(nums []int) int {
+	robMem = make([]int, len(nums)+2)
+	for i := range robMem {
+		robMem[i] = -1
+	}
+	return robDp(nums, 0)
+}
+
+func robDp(nums []int, start int) int {
+	if len(nums) >= start {
+		return 0
+	}
+
+	if robMem[start] != -1 {
+		return robMem[start]
+	}
+
+	robMem[start] = max(robDp(nums, start+1), nums[start]+robDp(nums, start+2))
+	return robMem[start]
+}
