@@ -12,11 +12,13 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-type server struct{}
+type server struct {
+	pb.UnimplementedHelloServiceServer
+}
 
 func (s *server) Hello(ctx context.Context, req *pb.String) (*pb.String, error) {
-	return &pb.String{Value: fmt.Sprintf("%d, Hello -- %s",
-		time.Now().Second(), req.GetValue())}, nil
+	return &pb.String{Value: fmt.Sprintf("%s, Hello -- %s",
+		time.Now().String(), req.GetValue())}, nil
 }
 
 func main() {
