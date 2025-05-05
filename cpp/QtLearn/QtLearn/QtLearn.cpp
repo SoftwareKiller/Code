@@ -40,6 +40,34 @@ QtLearn::QtLearn(QWidget* parent)
 
 	afterClass();
 	connect(btn, &QPushButton::clicked, t, teacherHungryNoParam);
+
+	QPushButton* btn3 = new QPushButton;
+	btn3->setParent(this);
+	btn3->move(100, 100);
+	btn3->setText("关闭");
+	connect(btn3, &QPushButton::clicked, [=]() {
+		this->close();
+		});
+
+	QPushButton* btn4 = new QPushButton;
+	QWidget* wdt = new QWidget(parent);
+	btn4->setParent(this);
+	btn4->move(150, 150);
+	bool flag = false;
+	btn4->setText("open");
+	connect(btn4, &QPushButton::clicked, wdt, [=, &flag]() {
+		if (flag) {
+			btn4->setText("open");
+			flag = false;
+			wdt->close();
+		}
+		else {
+			flag = true;
+			btn4->setText("close");
+			wdt->setWindowTitle("Just open a window");
+			wdt->show();
+		}
+		});
 }
 
 QtLearn::~QtLearn()

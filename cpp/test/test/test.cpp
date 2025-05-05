@@ -453,8 +453,27 @@ bool isNumber(string s) {
     return nums;
 }
 
+void testVectorIt() {
+    vector<int> v{ 1,2,3,4,5,6 };
+
+    for (auto it = v.begin(); it != v.end();) {
+        if (*it > 2) {
+            it = v.erase(it);
+        }
+        else {
+            it++;
+        }
+    }
+
+    for (auto it = v.begin(); it != v.end(); it++) {
+        cout << *it << " ";
+    }
+    cout << endl;
+}
+
 int main()
 {
+    testVectorIt();
     //LRU l(3);
     //l.put(1, 1);
     //l.put(1, 1);
@@ -481,6 +500,7 @@ int main()
     /*cout << getPermutation(9, 362770) << endl;*/
     //vector<vector<int>> v{ {0,1}, {0, 0} };
     //uniquePathsWithObstacles(v);
-    isNumber("--6");
+    /*isNumber("--6");*/
+
 }
 

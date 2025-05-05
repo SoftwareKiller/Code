@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"leetcode/hard"
-)
+import "leetcode/mid"
 
 func main() {
 	// // 42
@@ -98,5 +95,10 @@ func main() {
 	// 121
 	// fmt.Println(mid.MaxProfit([]int{7, 1, 5, 3, 6, 4}))
 	// 32
-	fmt.Println(hard.LongestValidParentheses("()(()"))
+	// fmt.Println(hard.LongestValidParentheses("()(()"))
+	// mid.MaximalRectangle([][]byte{
+	// 	{'1', '0', '1', '0', '0'},
+	// 	{'1', '0', '1', '1', '1'},
+	// 	{'1', '1', '1', '1', '1'}})
+	mid.MaxRectangle([]int{3, 4, 5, 2, 6})
 }
